@@ -25,6 +25,7 @@ import com.tacz.guns.resource.pojo.data.gun.ExtraDamage.DistanceDamagePair;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
 import com.tacz.guns.resource.pojo.data.gun.Ignite;
 import com.tacz.guns.sound.BulletHitSoundManager;
+import com.tacz.guns.util.BulletHitEffects;
 import com.tacz.guns.util.EntityUtil;
 import com.tacz.guns.util.ExplodeUtil;
 import com.tacz.guns.util.TacHitResult;
@@ -52,6 +53,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -247,7 +249,7 @@ public class EntityKineticBullet extends Projectile implements IEntityAdditional
             for (int i = 0; i < 4; i++) {
                 this.level().addParticle(ParticleTypes.BUBBLE, nextPosX - x * 0.25F, nextPosY - y * 0.25F, nextPosZ - z * 0.25F, x, y, z);
             }
-            // 在水中的阻力
+            
             friction = 0.4F;
             gravity *= 0.6F;
         }
@@ -397,14 +399,14 @@ public class EntityKineticBullet extends Projectile implements IEntityAdditional
         if (entity == null) {
             return;
         }
-        // 点燃
         if (this.igniteEntity && AmmoConfig.IGNITE_ENTITY.get()) {
             entity.setSecondsOnFire(this.igniteEntityTime);
-            // 给予粒子效果
             if (this.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.LAVA, entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ(), 1, 0, 0, 0, 0);
             }
         }
+        
+
         // TODO 暴击判定（不是爆头）暴击判定内部逻辑，需要输出一个是否暴击的 flag
         if (headshot) {
             // 默认爆头伤害是 1x
@@ -452,30 +454,47 @@ public class EntityKineticBullet extends Projectile implements IEntityAdditional
         }
         BlockPos pos = result.getBlockPos();
         Vec3 hitVec = result.getLocation();
-        // 触发事件
-        // 提前触发事件以让事件可以取消原版的命中行为（例如敲钟，打倒靶子等）
+        
         if (MinecraftForge.EVENT_BUS.post(new AmmoHitBlockEvent(this.level(), result, this.level().getBlockState(pos), this))) {
             return;
         }
         super.onHitBlock(result);
-        // 爆炸
+        
         if (this.explosion) {
             ExplodeUtil.createExplosion(this.getOwner(), this, this.explosionDamage, this.explosionRadius, this.explosionKnockback, this.explosionDestroyBlock, hitVec);
-            // 爆炸直接结束不留弹孔，不处理之后的逻辑
             this.discard();
             return;
         }
-        // 弹孔与点燃特效
-        if (this.level() instanceof ServerLevel serverLevel) {
+        
+        this.handleBulletHitEffects(result, hitVec, pos);
+        this.handleIgniteBlock(result, hitVec, pos);
+        this.discard();
+    }
+    
+    private void handleBulletHitEffects(BlockHitResult result, Vec3 hitVec, BlockPos pos) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        
+        BlockState hitBlockState = this.level().getBlockState(pos);
+        boolean isUnderwater = this.isInWater();
+        
+        if (hitBlockState.getBlock() == Blocks.WATER) {
+            BulletHitEffects.spawnWaterHitEffects(this.level(), hitVec);
+        } else {
             BulletHoleOption bulletHoleOption = new BulletHoleOption(result.getDirection(), result.getBlockPos(), this.ammoId.toString(), this.gunId.toString(), this.gunDisplayId.toString());
             serverLevel.sendParticles(bulletHoleOption, hitVec.x, hitVec.y, hitVec.z, 1, 0, 0, 0, 0);
-            if (this.igniteBlock) {
-                serverLevel.sendParticles(ParticleTypes.LAVA, hitVec.x, hitVec.y, hitVec.z, 1, 0, 0, 0, 0);
-            }
             
-            // Воспроизводим звук попадания в блок
-            BulletHitSoundManager.playBulletHitSound(this.level(), hitVec, this.level().getBlockState(pos));
+            BulletHitEffects.playHitSound(this.level(), hitVec, hitBlockState, pos);
+            BulletHitEffects.spawnHitParticles(this.level(), hitVec, hitBlockState, result.getDirection());
         }
+        
+        if (this.igniteBlock) {
+            serverLevel.sendParticles(ParticleTypes.LAVA, hitVec.x, hitVec.y, hitVec.z, 1, 0, 0, 0, 0);
+        }
+    }
+    
+    private void handleIgniteBlock(BlockHitResult result, Vec3 hitVec, BlockPos pos) {
         if (this.igniteBlock && AmmoConfig.IGNITE_BLOCK.get()) {
             BlockPos offsetPos = pos.relative(result.getDirection());
             if (BaseFireBlock.canBePlacedAt(this.level(), offsetPos, result.getDirection())) {
@@ -484,7 +503,6 @@ public class EntityKineticBullet extends Projectile implements IEntityAdditional
                 ((ServerLevel) this.level()).sendParticles(ParticleTypes.LAVA, hitVec.x - 1.0 + this.random.nextDouble() * 2.0, hitVec.y, hitVec.z - 1.0 + this.random.nextDouble() * 2.0, 4, 0, 0, 0, 0);
             }
         }
-        this.discard();
     }
 
     // 根据距离进行伤害衰减设计
