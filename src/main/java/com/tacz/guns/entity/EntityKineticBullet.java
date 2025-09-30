@@ -24,6 +24,7 @@ import com.tacz.guns.resource.pojo.data.gun.ExplosionData;
 import com.tacz.guns.resource.pojo.data.gun.ExtraDamage.DistanceDamagePair;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
 import com.tacz.guns.resource.pojo.data.gun.Ignite;
+import com.tacz.guns.sound.BulletHitSoundManager;
 import com.tacz.guns.util.EntityUtil;
 import com.tacz.guns.util.ExplodeUtil;
 import com.tacz.guns.util.TacHitResult;
@@ -471,6 +472,9 @@ public class EntityKineticBullet extends Projectile implements IEntityAdditional
             if (this.igniteBlock) {
                 serverLevel.sendParticles(ParticleTypes.LAVA, hitVec.x, hitVec.y, hitVec.z, 1, 0, 0, 0, 0);
             }
+            
+            // Воспроизводим звук попадания в блок
+            BulletHitSoundManager.playBulletHitSound(this.level(), hitVec, this.level().getBlockState(pos));
         }
         if (this.igniteBlock && AmmoConfig.IGNITE_BLOCK.get()) {
             BlockPos offsetPos = pos.relative(result.getDirection());

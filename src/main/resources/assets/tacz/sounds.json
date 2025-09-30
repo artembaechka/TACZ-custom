@@ -18,5 +18,44 @@
       "tacz:block/target_block_hit/target_block_hit_6",
       "tacz:block/target_block_hit/target_block_hit_7"
     ]
+  },
+  "bullet_hit_generic": {
+    "sounds": [
+      "tacz:bullet/bullet1",
+      "tacz:bullet/bullet2",
+      "tacz:bullet/bullet3",
+      "tacz:bullet/bullet4",
+      "tacz:bullet/bullet5",
+      "tacz:bullet/bullet6",
+      "tacz:bullet/bullet7",
+      "tacz:bullet/bullet8",
+      "tacz:bullet/bullet9",
+      "tacz:bullet/bullet10",
+      "tacz:bullet/bullet11",
+      "tacz:bullet/bullet12",
+      "tacz:bullet/bullet13",
+      "tacz:bullet/bullet14",
+      "tacz:bullet/bullet15",
+      "tacz:bullet/bullet16"
+    ]
+  },
+  "bullet_hit_metal": {
+    "sounds": [
+      "tacz:bullet/metal_01",
+      "tacz:bullet/metal_02",
+      "tacz:bullet/metal_03",
+      "tacz:bullet/metal_04",
+      "tacz:bullet/metal_05"
+    ]
+  },
+  "bullet_hit_water": {
+    "sounds": [
+      "tacz:bullet/water_01",
+      "tacz:bullet/water_02",
+      "tacz:bullet/water_03",
+      "tacz:bullet/water_04",
+      "tacz:bullet/water_05",
+      "tacz:bullet/water_06"
+    ]
   }
 }
