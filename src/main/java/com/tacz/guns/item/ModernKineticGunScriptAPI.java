@@ -161,7 +161,13 @@ public class ModernKineticGunScriptAPI {
                 // 播放枪声
                 if (soundDistance > 0) {
                     String soundId = useSilenceSound ? SoundManager.SILENCE_3P_SOUND : SoundManager.SHOOT_3P_SOUND;
-                    SoundManager.sendSoundToNearby(shooter, soundDistance, gunId, gunDisplayId, soundId, 0.8f, 0.9f + shooter.getRandom().nextFloat() * 0.125f);
+                    // Применяем модификатор громкости из gun data
+                    float volumeMultiplier = useSilenceSound ? 
+                        gunIndex.getGunData().getFireSound().getSilenceMultiplier() : 
+                        gunIndex.getGunData().getFireSound().getFireMultiplier();
+                    float baseVolume = useSilenceSound ? 0.6f : 0.8f;
+                    float volume = baseVolume * volumeMultiplier;
+                    SoundManager.sendSoundToNearby(shooter, soundDistance, gunId, gunDisplayId, soundId, volume, 0.9f + shooter.getRandom().nextFloat() * 0.125f);
                 }
             }
             return true;

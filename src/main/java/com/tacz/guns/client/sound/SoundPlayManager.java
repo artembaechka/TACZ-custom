@@ -75,11 +75,13 @@ public class SoundPlayManager {
     }
 
     public static void playShootSound(LivingEntity entity, GunDisplayInstance gunIndex, GunData gunData) {
-        playClientSound(entity, gunIndex.getSounds(SoundManager.SHOOT_SOUND), 0.8f, 0.9f + entity.getRandom().nextFloat() * 0.125f, (int) (GunConfig.DEFAULT_GUN_FIRE_SOUND_DISTANCE.get() * gunData.getFireSound().getFireMultiplier()));
+        float volume = 0.8f * gunData.getFireSound().getFireMultiplier();
+        playClientSound(entity, gunIndex.getSounds(SoundManager.SHOOT_SOUND), volume, 0.9f + entity.getRandom().nextFloat() * 0.125f, (int) (GunConfig.DEFAULT_GUN_FIRE_SOUND_DISTANCE.get() * gunData.getFireSound().getFireMultiplier()));
     }
 
     public static void playSilenceSound(LivingEntity entity, GunDisplayInstance gunIndex, GunData gunData) {
-        playClientSound(entity, gunIndex.getSounds(SoundManager.SILENCE_SOUND), 0.6f, 0.9f + entity.getRandom().nextFloat() * 0.125f, (int) (GunConfig.DEFAULT_GUN_SILENCE_SOUND_DISTANCE.get() * gunData.getFireSound().getSilenceMultiplier()));
+        float volume = 0.6f * gunData.getFireSound().getSilenceMultiplier();
+        playClientSound(entity, gunIndex.getSounds(SoundManager.SILENCE_SOUND), volume, 0.9f + entity.getRandom().nextFloat() * 0.125f, (int) (GunConfig.DEFAULT_GUN_SILENCE_SOUND_DISTANCE.get() * gunData.getFireSound().getSilenceMultiplier()));
     }
 
     public static void playDryFireSound(LivingEntity entity, GunDisplayInstance gunIndex) {
