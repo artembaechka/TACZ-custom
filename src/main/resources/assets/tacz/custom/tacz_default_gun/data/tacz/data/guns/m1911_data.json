@@ -1,6 +1,10 @@
 {
   "ammo": "tacz:45acp",
   "rpm": 350,
+  "fire_sound": {
+    "fire_multiplier": 0.5,
+    "silence_multiplier": 0.3
+  },
   "bullet": {
     "life": 1,
     "bullet_amount": 1,

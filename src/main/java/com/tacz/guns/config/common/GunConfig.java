@@ -13,7 +13,7 @@ public class GunConfig {
         builder.push("gun");
 
         builder.comment("The default fire sound range (block)");
-        DEFAULT_GUN_FIRE_SOUND_DISTANCE = builder.defineInRange("DefaultGunFireSoundDistance", 64, 0, Integer.MAX_VALUE);
+        DEFAULT_GUN_FIRE_SOUND_DISTANCE = builder.defineInRange("DefaultGunFireSoundDistance", 512, 0, Integer.MAX_VALUE);
 
         builder.comment("The silencer default fire sound range (block)");
         DEFAULT_GUN_SILENCE_SOUND_DISTANCE = builder.defineInRange("DefaultGunSilenceSoundDistance", 16, 0, Integer.MAX_VALUE);

@@ -6,6 +6,10 @@
     20,
     25
   ],
+  "fire_sound": {
+    "fire_multiplier": 1.2,
+    "silence_multiplier": 0.8
+  },
   "bolt": "closed_bolt",
   "rpm": 510,
   "script": "tacz:xmag_reload_logic",
