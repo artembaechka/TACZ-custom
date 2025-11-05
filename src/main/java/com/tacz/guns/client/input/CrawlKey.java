@@ -2,7 +2,6 @@ package com.tacz.guns.client.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tacz.guns.api.client.gameplay.IClientPlayerGunOperator;
-import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.config.client.KeyConfig;
 import com.tacz.guns.config.sync.SyncConfig;
 import net.minecraft.client.KeyMapping;
@@ -36,37 +35,26 @@ public class CrawlKey {
                 return;
             }
             LocalPlayer player = Minecraft.getInstance().player;
-            if (player == null || player.isSpectator() || player.isPassenger()) {
+            if (player == null || player.isSpectator() || player.isPassenger()
+                    || !(player instanceof IClientPlayerGunOperator operator)) {
                 return;
             }
-            if (!(player instanceof IClientPlayerGunOperator operator)) {
-                return;
+
+            boolean action = true;
+            if (!KeyConfig.HOLD_TO_CRAWL.get()) {
+                action = !operator.isCrawl();
             }
-            if (player.getMainHandItem().getItem() instanceof IGun iGun) {
-                // 如果不允许下蹲，则禁止进行下蹲
-                if (!iGun.isCanCrawl(player.getMainHandItem())) {
-                    IClientPlayerGunOperator.fromLocalPlayer(player).crawl(false);
-                    return;
-                }
-                boolean action = true;
-                if (!KeyConfig.HOLD_TO_CRAWL.get()) {
-                    action = !operator.isCrawl();
-                }
-                if (event.getAction() == GLFW.GLFW_PRESS) {
-                    IClientPlayerGunOperator.fromLocalPlayer(player).crawl(action);
-                }
-                if (KeyConfig.HOLD_TO_CRAWL.get() && event.getAction() == GLFW.GLFW_RELEASE) {
-                    IClientPlayerGunOperator.fromLocalPlayer(player).crawl(false);
-                }
+            if (event.getAction() == GLFW.GLFW_PRESS) {
+                IClientPlayerGunOperator.fromLocalPlayer(player).crawl(action);
+            }
+            if (KeyConfig.HOLD_TO_CRAWL.get() && event.getAction() == GLFW.GLFW_RELEASE) {
+                IClientPlayerGunOperator.fromLocalPlayer(player).crawl(false);
             }
         }
     }
 
     public static boolean onCrawlControllerPress(boolean isPress) {
-        if (!isInGame()) {
-            return false;
-        }
-        if (!SyncConfig.ENABLE_CRAWL.get()) {
+        if (!(isInGame()||SyncConfig.ENABLE_CRAWL.get())) {
             return false;
         }
         LocalPlayer player = Minecraft.getInstance().player;
@@ -74,9 +62,6 @@ public class CrawlKey {
             return false;
         }
         if (!(player instanceof IClientPlayerGunOperator operator)) {
-            return false;
-        }
-        if (!IGun.mainHandHoldGun(player)) {
             return false;
         }
         boolean action = true;
