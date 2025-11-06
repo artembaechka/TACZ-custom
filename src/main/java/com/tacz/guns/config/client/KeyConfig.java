@@ -6,6 +6,7 @@ public class KeyConfig {
     public static ForgeConfigSpec.BooleanValue HOLD_TO_AIM;
     public static ForgeConfigSpec.BooleanValue HOLD_TO_CRAWL;
     public static ForgeConfigSpec.BooleanValue AUTO_RELOAD;
+    public static ForgeConfigSpec.BooleanValue RELOAD_NO_AIM;
 
     public static void init(ForgeConfigSpec.Builder builder) {
         builder.push("key");
@@ -18,6 +19,9 @@ public class KeyConfig {
 
         builder.comment("Try to reload automatically when the gun is empty");
         AUTO_RELOAD = builder.define("AutoReload", false);
+
+        builder.comment("Reload undo Aim");
+        RELOAD_NO_AIM = builder.define("ReloadNoAim", false);
 
         builder.pop();
     }
