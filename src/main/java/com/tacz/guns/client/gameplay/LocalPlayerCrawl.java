@@ -34,7 +34,7 @@ public class LocalPlayerCrawl {
         if (crawCooldownTicks > 0) {
             crawCooldownTicks--;
         }
-        if (player.isSpectator() || player.isPassenger() || player.isSwimming() || (player.fallDistance>=0.6) ) {
+        if (player.isSpectator() || player.isPassenger() || player.isSwimming() || (player.fallDistance>=0.6)) {
             isCrawling = false;
             this.setCrawlPose();
             return;
