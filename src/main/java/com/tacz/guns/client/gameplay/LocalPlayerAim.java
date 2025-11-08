@@ -1,7 +1,9 @@
 package com.tacz.guns.client.gameplay;
 
 import com.tacz.guns.api.TimelessAPI;
+import com.tacz.guns.api.client.gameplay.IClientPlayerGunOperator;
 import com.tacz.guns.api.entity.IGunOperator;
+import com.tacz.guns.config.client.KeyConfig;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.network.NetworkHandler;
 import com.tacz.guns.network.message.ClientMessagePlayerAim;
@@ -44,6 +46,11 @@ public class LocalPlayerAim {
     }
 
     public void tickAimingProgress() {
+        if (KeyConfig.RELOAD_NO_AIM.get() && (IGunOperator.fromLivingEntity(player).getSynReloadState().getStateType().isReloading() && data.clientIsAiming)) {
+            data.clientIsAiming = false;
+            IClientPlayerGunOperator.fromLocalPlayer(player).aim(false);
+            return;
+        }
         ItemStack mainHandItem = player.getMainHandItem();
         // 如果主手物品不是枪械，则取消瞄准状态并将 aimingProgress 归零，返回。
         if (!(mainHandItem.getItem() instanceof IGun iGun)) {
