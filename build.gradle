@@ -68,7 +68,6 @@ minecraft {
             // 如果你使用别的 JDK，那么可以删除这一行
             // 每个启动单独区分文件夹
             workingDirectory project.file('run/client_a')
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
@@ -94,7 +93,6 @@ minecraft {
 
         server {
             workingDirectory project.file('run/server')
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
             property 'mixin.env.disableRefMap', 'true'
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
