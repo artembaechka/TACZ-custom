@@ -1,12 +1,8 @@
 package com.tacz.guns.entity.shooter;
 
-import com.tacz.guns.api.TimelessAPI;
-import com.tacz.guns.api.item.IGun;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 public class LivingEntityCrawl {
     private final LivingEntity shooter;
@@ -22,28 +18,7 @@ public class LivingEntityCrawl {
     }
 
     public void tickCrawling() {
-        // currentGunItem 如果为 null，则取消趴下状态
-        if (data.currentGunItem == null || !(data.currentGunItem.get().getItem() instanceof IGun iGun)) {
-            data.isCrawling = false;
-            this.setCrawlPose();
-            return;
-        }
-        ItemStack currentGunItem = data.currentGunItem.get();
-        // 不允许趴下的武器，则取消趴下状态
-        if (!iGun.isCanCrawl(currentGunItem)) {
-            data.isCrawling = false;
-            this.setCrawlPose();
-            return;
-        }
-        // 如果获取不到 gunIndex，则取消趴下状态
-        ResourceLocation gunId = iGun.getGunId(currentGunItem);
-        if (TimelessAPI.getCommonGunIndex(gunId).isEmpty()) {
-            data.isCrawling = false;
-            this.setCrawlPose();
-            return;
-        }
-        // 如果是观察者模型、骑乘、跳跃、在游泳、不在地上，取消
-        if (shooter.isSpectator() || shooter.isPassenger() || shooter.jumping || shooter.isSwimming() || !shooter.onGround()) {
+        if (shooter.isSpectator() || shooter.isPassenger() || shooter.isSwimming() || (shooter.fallDistance>0.75)) {
             data.isCrawling = false;
             this.setCrawlPose();
             return;

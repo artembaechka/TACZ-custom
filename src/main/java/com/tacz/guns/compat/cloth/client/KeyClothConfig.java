@@ -22,6 +22,9 @@ public class KeyClothConfig {
         key.addEntry(entryBuilder.startBooleanToggle(Component.translatable("config.tacz.client.key.auto_reload"), KeyConfig.AUTO_RELOAD.get())
                 .setDefaultValue(false).setTooltip(Component.translatable("config.tacz.client.key.auto_reload.desc"))
                 .setSaveConsumer(KeyConfig.AUTO_RELOAD::set).build());
+        key.addEntry(entryBuilder.startBooleanToggle(Component.translatable("config.tacz.client.key.reload_no_aim"), KeyConfig.RELOAD_NO_AIM.get())
+                .setDefaultValue(false).setTooltip(Component.translatable("config.tacz.client.key.reload_no_aim.desc"))
+                .setSaveConsumer(KeyConfig.RELOAD_NO_AIM::set).build());
 
         key.addEntry(new OpenGunPackDirEntry(Component.literal("test")));
     }
