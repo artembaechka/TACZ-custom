@@ -74,7 +74,11 @@ public class LivingEntityBolt {
                 return;
             }
             data.boltTimestamp = System.currentTimeMillis();
+            data.boltingGunItem = currentGunItem;
             data.isBolting = iGun.startBolt(data, currentGunItem, shooter);
+            if (!data.isBolting) {
+                data.boltingGunItem = null;
+            }
         });
     }
 
@@ -83,17 +87,21 @@ public class LivingEntityBolt {
         if (!data.isBolting) {
             return;
         }
-        if (data.currentGunItem == null) {
+        if (data.currentGunItem == null && data.boltingGunItem == null) {
             data.isBolting = false;
             return;
         }
-        ItemStack currentGunItem = data.currentGunItem.get();
+        ItemStack currentGunItem = data.boltingGunItem != null ? data.boltingGunItem : data.currentGunItem.get();
         if (!(currentGunItem.getItem() instanceof AbstractGunItem iGun)) {
             data.isBolting = false;
+            data.boltingGunItem = null;
             return;
         }
         ResourceLocation gunId = iGun.getGunId(currentGunItem);
         Optional<CommonGunIndex> gunIndex = TimelessAPI.getCommonGunIndex(gunId);
         data.isBolting = gunIndex.map(index -> iGun.tickBolt(data, currentGunItem, shooter)).orElse(false);
+        if (!data.isBolting) {
+            data.boltingGunItem = null;
+        }
     }
 }

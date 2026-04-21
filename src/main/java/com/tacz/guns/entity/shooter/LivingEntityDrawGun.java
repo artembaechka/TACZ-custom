@@ -27,7 +27,7 @@ public class LivingEntityDrawGun {
 
     public void draw(Supplier<ItemStack> gunItemSupplier) {
         // 重置各个状态
-        data.initialData();
+        data.initialData(data.isBolting);
 
         // 更新切枪时间戳
         if (data.drawTimestamp == -1) {

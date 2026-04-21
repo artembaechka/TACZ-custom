@@ -24,6 +24,10 @@ public class LocalPlayerBolt {
     }
 
     public void bolt() {
+        bolt(true);
+    }
+
+    private void bolt(boolean playFeedback) {
         // 检查状态锁
         if (data.clientStateLock) {
             return;
@@ -69,6 +73,9 @@ public class LocalPlayerBolt {
             data.isBolting = true;
             // 发包通知服务器
             NetworkHandler.CHANNEL.sendToServer(new ClientMessagePlayerBoltGun());
+            if (!playFeedback) {
+                return;
+            }
             // 播放动画和音效
             AnimationStateMachine<?> animationStateMachine = display.getAnimationStateMachine();
             if (animationStateMachine != null) {
@@ -84,7 +91,13 @@ public class LocalPlayerBolt {
             data.isBolting = false;
             return;
         }
-        bolt();
+        IGunOperator gunOperator = IGunOperator.fromLivingEntity(player);
+        boolean retryBolt = false;
+        if (data.isBolting && !data.clientStateLock && !gunOperator.getSynIsBolting() && !iGun.hasBulletInBarrel(mainHandItem)) {
+            data.isBolting = false;
+            retryBolt = true;
+        }
+        bolt(!retryBolt);
         if (data.isBolting) {
             // 对于客户端来说，膛内弹药被填入的状态同步到客户端的瞬间，bolt 过程才算完全结束
             if (iGun.hasBulletInBarrel(mainHandItem)) {

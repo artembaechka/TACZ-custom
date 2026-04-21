@@ -42,6 +42,8 @@ public class ShooterDataHolder {
      */
     public long boltTimestamp = -1;
     public boolean isBolting = false;
+    @Nullable
+    public ItemStack boltingGunItem = null;
     /**
      * 瞄准的进度，范围 0 ~ 1
      */
@@ -107,6 +109,14 @@ public class ShooterDataHolder {
     public AttachmentCacheProperty cacheProperty = null;
 
     public void initialData() {
+        initialData(false);
+    }
+
+    public void initialData(boolean keepBolt) {
+        long oldBoltTimestamp = boltTimestamp;
+        boolean oldIsBolting = isBolting;
+        ItemStack oldBoltingGunItem = boltingGunItem;
+        LuaValue oldScriptData = scriptData;
         // 重置各个状态
         shootTimestamp = -1;
         meleeTimestamp = -1;
@@ -119,8 +129,15 @@ public class ShooterDataHolder {
         sprintTimeS = 0;
         boltTimestamp = -1;
         isBolting = false;
+        boltingGunItem = null;
         shootCount = 0;
         scriptData = null;
         heatTimestamp = -1;
+        if (keepBolt) {
+            boltTimestamp = oldBoltTimestamp;
+            isBolting = oldIsBolting;
+            boltingGunItem = oldBoltingGunItem;
+            scriptData = oldScriptData;
+        }
     }
 }
