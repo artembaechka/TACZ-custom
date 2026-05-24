@@ -195,7 +195,7 @@ repositories {
     }
     maven {
         name = "svocraftRepository"
-        url = uri("https://reposilite.baechka.me/releases")
+        url = uri("https://repo.svocraft.xyz/releases")
     }
     mavenCentral() // MixinExtras is there
     mavenLocal()
@@ -319,7 +319,7 @@ afterEvaluate {
         repositories {
             maven {
                 name = "reposilite"
-                url = uri("https://reposilite.artembay.ru/releases")
+                url = uri("https://repo.svocraft.xyz/releases")
 
                 credentials {
                     def user = project.ext.get("reposilite.user")
