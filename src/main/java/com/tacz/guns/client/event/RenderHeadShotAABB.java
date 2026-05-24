@@ -26,6 +26,13 @@ public class RenderHeadShotAABB {
         if (!RenderConfig.HEAD_SHOT_DEBUG_HITBOX.get()) {
             return;
         }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            return;
+        }
+        if (mc.player.isReducedDebugInfo()) {
+            return;
+        }
         LivingEntity entity = event.getEntity();
         ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
         if (entityId == null) {
